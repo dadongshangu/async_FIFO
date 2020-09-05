@@ -1,37 +1,79 @@
-module fifo1 #(parameter DSIZE = 8,
-parameter ASIZE = 4)
-(output [DSIZE-1:0] rdata,
-output wfull,
-output rempty,
-input [DSIZE-1:0] wdata,
-input winc, wclk, wrst_n,
-input rinc, rclk, rrst_n);
-wire [ASIZE-1:0] waddr, raddr;
-wire [ASIZE:0] wptr, rptr, wq2_rptr, rq2_wptr;
+module async_fifo #(parameter DSIZE = 8,
+                    parameter ASIZE = 4)
+            (
+                rdata,
+                wfull,
+                rempty,
+                wdata,
+                winc, 
+                wclk, 
+                wrst_n,
+                rinc, 
+                rclk, 
+                rrst_n
+            );
+output [DSIZE-1:0]  rdata;
+output              wfull;
+output              rempty;
 
-sync_r2w sync_r2w (.wq2_rptr(wq2_rptr), .rptr(rptr),
-.wclk(wclk), .wrst_n(wrst_n));
+input [DSIZE-1:0]   wdata;
+input               winc;
+input               wclk;
+input               wrst_n;
 
-sync_w2r sync_w2r (.rq2_wptr(rq2_wptr), .wptr(wptr),
-.rclk(rclk), .rrst_n(rrst_n));
+input               rinc;
+input               rclk;
+input               rrst_n;
 
-fifomem #(DSIZE, ASIZE) fifomem
-(.rdata(rdata), .wdata(wdata),
-.waddr(waddr), .raddr(raddr),
-.wclken(winc), .wfull(wfull),
-.wclk(wclk));
+wire [ASIZE-1:0]    waddr;
+wire [ASIZE-1:0]    raddr;
+wire [ASIZE:0]      wptr;
+wire [ASIZE:0]      rptr;
+wire [ASIZE:0]      wq2_rptr;
+wire [ASIZE:0]      rq2_wptr;
 
-rptr_empty #(ASIZE) rptr_empty
-(.rempty(rempty),
-.raddr(raddr),
-.rptr(rptr), .rq2_wptr(rq2_wptr),
-.rinc(rinc), .rclk(rclk),
-.rrst_n(rrst_n));
+gray_sync2d sync_r2w (
+    .o_ptr(wq2_rptr), 
+    .i_ptr(rptr),
+    .des_clk(wclk), 
+    .des_rst_n(wrst_n)
+);
 
-wptr_full #(ASIZE) wptr_full
-(.wfull(wfull), .waddr(waddr),
-.wptr(wptr), .wq2_rptr(wq2_rptr),
-.winc(winc), .wclk(wclk),
-.wrst_n(wrst_n));
+gray_sync2d sync_w2r (
+    .o_ptr(rq2_wptr), 
+    .i_ptr(wptr),
+    .des_clk(rclk), 
+    .des_rst_n(rrst_n)
+);
+
+fifomem #(DSIZE, ASIZE) fifomem (
+    .rdata(rdata), 
+    .wdata(wdata),
+    .waddr(waddr), 
+    .raddr(raddr),
+    .wclken(winc), 
+    .wfull(wfull),
+    .wclk(wclk)
+);
+
+rptr_empty #(ASIZE) rptr_empty(
+    .rempty(rempty),
+    .raddr(raddr),
+    .rptr(rptr), 
+    .rq2_wptr(rq2_wptr),
+    .rinc(rinc), 
+    .rclk(rclk),
+    .rrst_n(rrst_n)
+);
+
+wptr_full #(ASIZE) wptr_full (
+    .wfull(wfull), 
+    .waddr(waddr),
+    .wptr(wptr), 
+    .wq2_rptr(wq2_rptr),
+    .winc(winc), 
+    .wclk(wclk),
+    .wrst_n(wrst_n)
+);
 
 endmodule

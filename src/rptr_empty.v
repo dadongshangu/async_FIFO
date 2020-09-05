@@ -1,12 +1,26 @@
 module rptr_empty #(parameter ADDRSIZE = 4)
-(output reg rempty,
-output [ADDRSIZE-1:0] raddr,
-output reg [ADDRSIZE :0] rptr,
-input [ADDRSIZE :0] rq2_wptr,
-input rinc, rclk, rrst_n);
+    (rempty,
+     raddr,
+     rptr,
+     rq2_wptr,
+     rinc, 
+     rclk, 
+     rrst_n
+    );
 
-reg [ADDRSIZE:0] rbin;
-wire [ADDRSIZE:0] rgraynext, rbinnext;
+output                  rempty;
+output [ADDRSIZE-1:0]   raddr;
+output [ADDRSIZE :0]    rptr;
+input [ADDRSIZE :0]     rq2_wptr;
+input                   rinc;
+input                   rclk;
+input                   rrst_n;
+
+reg [ADDRSIZE:0]        rbin;
+reg                     rempty;
+reg [ADDRSIZE :0]       rptr;
+wire [ADDRSIZE:0]       rgraynext;
+wire [ADDRSIZE:0]       rbinnext;
 
 //-------------------
 // GRAYSTYLE2 pointer
@@ -23,6 +37,7 @@ assign rgraynext = (rbinnext>>1) ^ rbinnext;
 // FIFO empty when the next rptr == synchronized wptr or on reset
 //---------------------------------------------------------------
 assign rempty_val = (rgraynext == rq2_wptr);
+
 always @(posedge rclk or negedge rrst_n)
     if (!rrst_n) rempty <= 1'b1;
     else rempty <= rempty_val;
