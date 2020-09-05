@@ -1,0 +1,1 @@
+rm -rf alib-52 default.svf WORK Netlists*.v *.report_* *.log *.txt
