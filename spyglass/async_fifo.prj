@@ -1,0 +1,35 @@
+#!SPYGLASS_PROJECT_FILE
+#!VERSION 3.0
+#  -------------------------------------------------------------------
+#  This is a software generated project file. Manual edits to this file could be lost during the next save operation
+#  Copyright Synopsys Inc.
+#  Last Updated By: SpyGlass SpyGlass_vL-2016.06
+#  Last Updated On Fri Feb 17 09:30:11 2017
+#
+#  -------------------------------------------------------------------
+
+##Data Import Section
+
+#read_file -type verilog ../sim/filelist.f
+read_file -type verilog ../src/async_fifo.v
+read_file -type verilog ../src/fifo_mem.v
+read_file -type verilog ../src/gray_sync2d.v
+read_file -type verilog ../src/rptr_empty.v
+read_file -type verilog ../src/wptr_full.v
+
+##Common Options Section
+
+set_option projectwdir .
+set_option language_mode mixed
+set_option designread_enable_synthesis no
+set_option designread_disable_flatten no
+set_option top async_fifo 
+set_option mthresh 8192
+set_option active_methodology $SPYGLASS_HOME/GuideWare/latest/block/rtl_handoff
+set_option incdir ../src
+
+##Goal Setup Section
+
+current_methodology $SPYGLASS_HOME/GuideWare/latest/block/rtl_handoff
+
+
