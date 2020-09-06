@@ -37,12 +37,21 @@ initial begin
    rinc=0;
 
    #200;
+   wdata = 0;
+   winc = 0;
    rinc=1;
 
    #400;
    rinc=0;
    
-   #400;
+   #200;
+   rinc=1;
+
+   #200;
+   rinc=0;
+   
+   
+   #4000;
    $finish; 
 end
 
@@ -72,4 +81,10 @@ async_fifo async_fifo(
                 .rclk(rclk), 
                 .rrst_n(rrst_n)
             );
+// fsdb
+initial begin
+    $fsdbDumpfile("top_tb.fsdb");
+    $fsdbDumpvars(0, top_tb);
+end
+
 endmodule
