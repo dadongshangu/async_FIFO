@@ -1,1 +1,1 @@
-verdi -f filelist.f &
+verdi -f ../flist/filelist.f &
