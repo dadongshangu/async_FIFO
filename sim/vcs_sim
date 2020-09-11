@@ -1,3 +1,4 @@
+
 #!/bin/bash
 vcs +v2k -debug_all -full64 \
 -P $NOVAS_HOME/share/PLI/VCS/LINUX64/verdi.tab \
