@@ -1,5 +1,5 @@
 ------------------README-----------------------
-1. Start the verdi: ./run_verdi
-2. Clean the env: ./clean_cmd
-------------------README-----------------------
+1. Start the verdi: make verdi 
+2. Clean the env: make clean 
+3. Run the simulation: make sim 
 
