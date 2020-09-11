@@ -1,3 +1,5 @@
 Please follow the steps to run the SpyGlass scripts.
-1) source run_sg.cmd
+1) make spyglass 
 2) Review all generated report (*.rpt).
+
+Clean command: make clean
