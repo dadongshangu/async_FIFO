@@ -1,0 +1,28 @@
+#!/bin/csh
+if ( $SIM_TOOL == "QUESTA" ) then
+vlib work
+vlog -f filelist.f
+vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +UVM_TESTNAME=$1
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +UVM_TESTNAME=my_case0 +UVM_OBJECTION_TRACE
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +UVM_TESTNAME=my_case0 +UVM_PHASE_TRACE
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +uvm_set_config_int="uvm_test_top.env.i_agt.drv,pre_num,'h8" +UVM_TESTNAME=my_case0
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +UVM_TESTNAME=my_case0 +UVM_CONFIG_DB_TRACE
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +uvm_set_action="uvm_test_top.env.i_agt.drv,my_driver,UVM_WARNING,UVM_DISPLAY|UVM_STOP" +UVM_TESTNAME=my_case0
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +uvm_set_action="uvm_test_top.env.i_agt.drv,my_driver,UVM_WARNING,UVM_DISPLAY|UVM_COUNT" +UVM_TESTNAME=my_case0
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +UVM_TESTNAME=my_case0 +UVM_MAX_QUIT_COUNT="6,1"
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +uvm_set_severity="uvm_test_top.env.i_agt.drv,my_driver,UVM_WARNING,UVM_ERROR" +UVM_TESTNAME=my_case0
+#vsim -novopt -sv_lib $UVM_DPI_DIR/uvm_dpi -do $WORK_HOME/bin/vsim.do -c top_tb +uvm_set_verbosity="uvm_test_top.env.i_agt.drv,_ALL_,UVM_LOW,main_phase" +UVM_TESTNAME=my_case0
+endif
+
+if ( $SIM_TOOL == "VCS" ) then
+vcs +acc +vpi -sverilog $UVM_HOME/src/dpi/uvm_dpi.cc -CFLAGS -DVCS -timescale=1ns/1ps -f filelist.f 
+./simv +UVM_TESTNAME=$1
+#./simv +UVM_TESTNAME=my_case0 +uvm_set_type_override="my_monitor,new_monitor"
+#./simv +UVM_TESTNAME=my_case0 +uvm_set_inst_override="my_monitor,new_monitor,uvm_test_top.env.o_agt.mon"
+#./simv +UVM_TESTNAME=my_case0 +UVM_TIMEOUT="300ns, YES"
+#./simv +UVM_TESTNAME=my_case0 +UVM_VERBOSITY=UVM_DEBUG
+endif
+
+if ( $SIM_TOOL == "NCSIM" ) then
+ncverilog +access+rwc +sv -f filelist.f -licqueue -timescale 1ns/1ps -uvm -uvmhome $UVM_HOME +UVM_TESTNAME=$1
+endif
