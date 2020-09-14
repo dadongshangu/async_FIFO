@@ -42,14 +42,14 @@ task asyncf_monitor::collect_one_pkt(asyncf_transaction tr);
    int data_size;
    
    while(1) begin
-      @(posedge vif.clk);
-      if(vif.valid) break;
+      @(posedge up_if.wclk);
+      if(up_if.winc) break;
    end
    
    `uvm_info("asyncf_monitor", "begin to collect one pkt", UVM_LOW);
-   while(vif.valid) begin
-      data_q.push_back(vif.data);
-      @(posedge vif.clk);
+   while(up_if.winc) begin
+      data_q.push_back(up_if.wdata);
+      @(posedge up_if.wclk);
    end
    data_size  = data_q.size();   
    data_array = new[data_size];
