@@ -34,8 +34,6 @@ endtask
 task asyncf_up_monitor::collect_one_pkt(asyncf_transaction tr);
    byte unsigned data_q[$];
    byte unsigned data_array[];
-   logic [7:0] wdata;
-   logic winc= 0;
    int data_size;
    
    while(1) begin
