@@ -8,11 +8,11 @@ class asyncf_down_monitor extends uvm_monitor;
    
    `uvm_component_utils(asyncf_down_monitor)
    function new(string name = "asyncf_down_monitor", uvm_component parent = null);
-      sdowner.new(name, parent);
+      super.new(name, parent);
    endfunction
 
    virtual function void build_phase(uvm_phase phase);
-      sdowner.build_phase(phase);
+      super.build_phase(phase);
       if(!uvm_config_db#(virtual down_if)::get(this, "", "down_if", down_if))
          `uvm_fatal("asyncf_down_mornitor", "virtual interface must be set for down_if!!!")
       ap = new("ap", this);

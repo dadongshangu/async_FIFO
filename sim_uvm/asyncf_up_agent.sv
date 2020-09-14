@@ -6,7 +6,7 @@ class asyncf_up_agent extends uvm_agent ;
    asyncf_driver     drv;
    asyncf_up_monitor mon;
    
-   uvm_analysis_port #(my_transaction)  ap;
+   uvm_analysis_port #(asyncf_transaction)  ap;
    
    function new(string name, uvm_component parent);
       super.new(name, parent);

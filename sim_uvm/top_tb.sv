@@ -2,49 +2,63 @@
 `include "uvm_macros.svh"
 
 import uvm_pkg::*;
-`include "my_if.sv"
-`include "my_transaction.sv"
-`include "my_sequencer.sv"
-`include "my_driver.sv"
-`include "my_monitor.sv"
-`include "my_agent.sv"
-`include "my_model.sv"
-`include "my_scoreboard.sv"
-`include "my_env.sv"
+`include "asyncf_if.sv"
+`include "asyncf_transaction.sv"
+`include "asyncf_sequencer.sv"
+`include "asyncf_driver.sv"
+`include "asyncf_up_monitor.sv"
+`include "asyncf_down_monitor.sv"
+`include "asyncf_up_agent.sv"
+`include "asyncf_down_agent.sv"
+`include "asyncf_model.sv"
+`include "asyncf_scoreboard.sv"
+`include "asyncf_env.sv"
 `include "base_test.sv"
-`include "my_case0.sv"
-`include "my_case1.sv"
+`include "asyncf_case0.sv"
 
 module top_tb;
 
-reg clk;
-reg rst_n;
-reg[7:0] rxd;
-reg rx_dv;
-wire[7:0] txd;
-wire tx_en;
+reg wclk;
+reg rclk;
+reg wrst_n;
+reg rrst_n;
 
-my_if input_if(clk, rst_n);
-my_if output_if(clk, rst_n);
+up_if up_if(wclk, wrst_n);
+down_if down_if(rclk, rrst_n);
 
-dut my_dut(.clk(clk),
-           .rst_n(rst_n),
-           .rxd(input_if.data),
-           .rx_dv(input_if.valid),
-           .txd(output_if.data),
-           .tx_en(output_if.valid));
+async_fifo async_fifo(
+                .rdata(down_if.rdata),
+                .wfull(up_if.wfull),
+                .rempty(down_if.rempty),
+                .wdata(up_if.wdata),
+                .winc(up_if.winc), 
+                .wclk(wclk), 
+                .wrst_n(wrst_n),
+                .rinc(down_if.rinc), 
+                .rclk(rclk), 
+                .rrst_n(rrst_n)
+            );
 
 initial begin
-   clk = 0;
+   wclk = 0;
    forever begin
-      #100 clk = ~clk;
+      #100 wclk = ~wclk;
    end
 end
 
 initial begin
-   rst_n = 1'b0;
+   rclk = 0;
+   forever begin
+      #150 rclk = ~rclk;
+   end
+end
+
+initial begin
+   wrst_n = 1'b0;
+   rrst_n = 1'b0;
    #1000;
-   rst_n = 1'b1;
+   wrst_n = 1'b1;
+   rrst_n = 1'b1;
 end
 
 initial begin
@@ -52,9 +66,9 @@ initial begin
 end
 
 initial begin
-   uvm_config_db#(virtual my_if)::set(null, "uvm_test_top.env.i_agt.drv", "vif", input_if);
-   uvm_config_db#(virtual my_if)::set(null, "uvm_test_top.env.i_agt.mon", "vif", input_if);
-   uvm_config_db#(virtual my_if)::set(null, "uvm_test_top.env.o_agt.mon", "vif", output_if);
+   uvm_config_db#(virtual up_if)::set(null, "uvm_test_top.env.i_agt.drv", "up_if", up_if);
+   uvm_config_db#(virtual up_if)::set(null, "uvm_test_top.env.i_agt.mon", "up_if", up_if);
+   uvm_config_db#(virtual down_if)::set(null, "uvm_test_top.env.o_agt.mon", "down_if", down_if);
 end
 
 endmodule
