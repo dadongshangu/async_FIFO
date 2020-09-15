@@ -17,7 +17,8 @@ endclass
 
 function void base_test::build_phase(uvm_phase phase);
    super.build_phase(phase);
-   env  =  asyncf_env::type_id::create("env", this); 
+   env  =  asyncf_env::type_id::create("env", this);
+   uvm_top.set_timeout(10000ns,0);
 endfunction
 
 function void base_test::report_phase(uvm_phase phase);

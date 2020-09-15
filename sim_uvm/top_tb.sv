@@ -6,6 +6,7 @@ import uvm_pkg::*;
 `include "asyncf_transaction.sv"
 `include "asyncf_sequencer.sv"
 `include "asyncf_driver.sv"
+//`include "asyncf_down_driver.sv"
 `include "asyncf_up_monitor.sv"
 `include "asyncf_down_monitor.sv"
 `include "asyncf_up_agent.sv"
@@ -22,6 +23,7 @@ reg wclk;
 reg rclk;
 reg wrst_n;
 reg rrst_n;
+reg rinc;
 
 up_if up_if(wclk, wrst_n);
 down_if down_if(rclk, rrst_n);
@@ -34,10 +36,19 @@ async_fifo async_fifo(
                 .winc(up_if.winc), 
                 .wclk(wclk), 
                 .wrst_n(wrst_n),
-                .rinc(down_if.rinc), 
+                //.rinc(down_if.rinc), 
+                .rinc(rinc), 
                 .rclk(rclk), 
                 .rrst_n(rrst_n)
             );
+
+always @(*) begin
+    if (~down_if.rempty)
+    rinc = 1;
+    else
+    rinc = 0;
+    end
+
 
 initial begin
    wclk = 0;
@@ -68,6 +79,7 @@ end
 initial begin
    uvm_config_db#(virtual up_if)::set(null, "uvm_test_top.env.i_agt.drv", "up_if", up_if);
    uvm_config_db#(virtual up_if)::set(null, "uvm_test_top.env.i_agt.mon", "up_if", up_if);
+//   uvm_config_db#(virtual down_if)::set(null, "uvm_test_top.env.o_agt.drv", "down_if", down_if);
    uvm_config_db#(virtual down_if)::set(null, "uvm_test_top.env.o_agt.mon", "down_if", down_if);
 end
 

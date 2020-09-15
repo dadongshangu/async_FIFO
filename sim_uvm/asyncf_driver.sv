@@ -17,6 +17,7 @@ class asyncf_driver extends uvm_driver#(asyncf_transaction);
 
    extern task main_phase(uvm_phase phase);
    extern task drive_one_pkt(asyncf_transaction tr);
+//   extern task drive_nothing();
 endclass
 
 task asyncf_driver::main_phase(uvm_phase phase);
@@ -29,6 +30,7 @@ task asyncf_driver::main_phase(uvm_phase phase);
       drive_one_pkt(req);
       seq_item_port.item_done();
    end
+   //drive_nothing();
 endtask
 
 task asyncf_driver::drive_one_pkt(asyncf_transaction tr);
@@ -36,24 +38,34 @@ task asyncf_driver::drive_one_pkt(asyncf_transaction tr);
    int  data_size;
    
    data_size = tr.pack_bytes(data_q) / 8; 
-   `uvm_info("asyncf_driver", "begin to drive one pkt", UVM_LOW);
-   repeat(3) @(posedge up_if.wclk);
+   //`uvm_info("asyncf_driver", "begin to drive one pkt", UVM_LOW);
+   //repeat(1) @(posedge up_if.wclk);
    for ( int i = 0; i < data_size; i++ ) begin
       @(posedge up_if.wclk);
-      if (~up_if.wfull) begin
-        up_if.winc<= 1'b1;
-        up_if.wdata <= data_q[i];
-      end
-      else begin
-        up_if.winc <= 1'b0;
-        up_if.wdata <= 8'b0;
+      while(1) begin
+        if (up_if.wfull) begin
+            //wait if full.
+            up_if.winc <= 1'b0;
+            @(posedge up_if.wclk);
+        end
+        else begin
+          up_if.winc<= 1'b1;
+          up_if.wdata <= data_q[i];
+          break;
+        end
       end
    end
 
+   //`uvm_info("asyncf_driver", "end drive one pkt", UVM_LOW);
    @(posedge up_if.wclk);
    up_if.winc<= 1'b0;
-   `uvm_info("asyncf_driver", "end drive one pkt", UVM_LOW);
+
 endtask
-//TODO. Question: How to drive the rinc side?
+//TODO: How to make it winc high for seval cycles, then come to zero?
+//task asyncf_driver::drive_nothing();
+//   @(posedge up_if.wclk);
+//   up_if.winc<= 1'b0;
+//
+//endtask
 
 `endif

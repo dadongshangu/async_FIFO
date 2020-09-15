@@ -4,7 +4,7 @@ simv:
 	vcs +v2k -debug_all -full64 \
 	-P ${NOVAS_HOME}/share/PLI/VCS/LINUX64/verdi.tab \
 	   ${NOVAS_HOME}/share/PLI/VCS/LINUX64/pli.a \
-    +acc +vpi -sverilog ${UVM_HOME}/src/dpi/uvm_dpi.cc -CFLAGS -DVCS -timescale=1ns/1ps \
+    +vpi -sverilog ${UVM_HOME}/src/dpi/uvm_dpi.cc -CFLAGS -DVCS -timescale=1ns/1ps \
 	+incdir+../tb \
 	-f ../flist/filelist_uvm.f \
 	+notimingcheck \
@@ -14,7 +14,7 @@ simv:
 
 
 verdi:
-	verdi -f ../flist/filelist_uvm.f &
+	verdi -f ../flist/filelist_uvm.f -ssf top_tb.fsdb -nologo &
 
 .PHONY: sim clean verdi 
 

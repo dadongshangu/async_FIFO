@@ -38,12 +38,12 @@ task asyncf_up_monitor::collect_one_pkt(asyncf_transaction tr);
       if(up_if.winc) break;
    end
    
-   `uvm_info("asyncf_up_monitor", "begin to collect one pkt", UVM_LOW);
+   `uvm_info("asyncf_up_monitor", "begin to collect one pkt", UVM_HIGH);
    while(up_if.winc) begin
       tr.data = up_if.wdata;
       @(posedge up_if.wclk);
    end
-   `uvm_info("asyncf_up_monitor", "end collect one pkt", UVM_LOW);
+   `uvm_info("asyncf_up_monitor", "end collect one pkt", UVM_HIGH);
 endtask
 
 
