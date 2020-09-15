@@ -3,7 +3,6 @@
 class asyncf_driver extends uvm_driver#(asyncf_transaction);
 
    virtual up_if up_if;
-   virtual down_if down_if;
 
    `uvm_component_utils(asyncf_driver)
    function new(string name = "asyncf_driver", uvm_component parent = null);
@@ -13,8 +12,6 @@ class asyncf_driver extends uvm_driver#(asyncf_transaction);
    virtual function void build_phase(uvm_phase phase);
       super.build_phase(phase);
       if(!uvm_config_db#(virtual up_if)::get(this, "", "up_if", up_if))
-         `uvm_fatal("asyncf_driver", "virtual interface must be set for up_if!!!")
-      if(!uvm_config_db#(virtual down_if)::get(this, "", "down_if", down_if))
          `uvm_fatal("asyncf_driver", "virtual interface must be set for up_if!!!")
    endfunction
 

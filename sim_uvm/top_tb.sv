@@ -71,4 +71,10 @@ initial begin
    uvm_config_db#(virtual down_if)::set(null, "uvm_test_top.env.o_agt.mon", "down_if", down_if);
 end
 
+// fsdb
+initial begin
+    $fsdbDumpfile("top_tb.fsdb");
+    $fsdbDumpvars(0, top_tb);
+end
+
 endmodule

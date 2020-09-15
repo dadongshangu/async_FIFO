@@ -32,9 +32,6 @@ task asyncf_up_monitor::main_phase(uvm_phase phase);
 endtask
 
 task asyncf_up_monitor::collect_one_pkt(asyncf_transaction tr);
-   byte unsigned data_q[$];
-   byte unsigned data_array[];
-   int data_size;
    
    while(1) begin
       @(posedge up_if.wclk);
@@ -43,15 +40,9 @@ task asyncf_up_monitor::collect_one_pkt(asyncf_transaction tr);
    
    `uvm_info("asyncf_up_monitor", "begin to collect one pkt", UVM_LOW);
    while(up_if.winc) begin
-      data_q.push_back(up_if.wdata);
+      tr.data = up_if.wdata;
       @(posedge up_if.wclk);
    end
-   data_size  = data_q.size();   
-   data_array = new[data_size];
-   for ( int i = 0; i < data_size; i++ ) begin
-      data_array[i] = data_q[i]; 
-   end
-   tr.data= new[data_size]; 
    `uvm_info("asyncf_up_monitor", "end collect one pkt", UVM_LOW);
 endtask
 
