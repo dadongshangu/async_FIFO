@@ -3,6 +3,7 @@
 class asyncf_driver extends uvm_driver#(asyncf_transaction);
 
    virtual up_if up_if;
+   logic no_tr = 1'b0;
 
    `uvm_component_utils(asyncf_driver)
    function new(string name = "asyncf_driver", uvm_component parent = null);
@@ -17,7 +18,7 @@ class asyncf_driver extends uvm_driver#(asyncf_transaction);
 
    extern task main_phase(uvm_phase phase);
    extern task drive_one_pkt(asyncf_transaction tr);
-//   extern task drive_nothing();
+   extern task drive_nothing();
 endclass
 
 task asyncf_driver::main_phase(uvm_phase phase);
@@ -25,12 +26,19 @@ task asyncf_driver::main_phase(uvm_phase phase);
    up_if.winc  <= 1'b0;
    while(!up_if.wrst_n)
       @(posedge up_if.wclk);
-   while(1) begin
-      seq_item_port.get_next_item(req);
-      drive_one_pkt(req);
-      seq_item_port.item_done();
-   end
-   //drive_nothing();
+   
+   fork
+       while(1) begin
+          seq_item_port.get_next_item(req);
+          no_tr = 1'b0;
+          drive_one_pkt(req);
+          no_tr = 1'b1;
+          seq_item_port.item_done();
+       end
+       while (1) begin
+           drive_nothing();
+       end
+   join
 endtask
 
 task asyncf_driver::drive_one_pkt(asyncf_transaction tr);
@@ -57,15 +65,14 @@ task asyncf_driver::drive_one_pkt(asyncf_transaction tr);
    end
 
    //`uvm_info("asyncf_driver", "end drive one pkt", UVM_LOW);
-   @(posedge up_if.wclk);
-   up_if.winc<= 1'b0;
+   //@(posedge up_if.wclk);
+   //up_if.winc<= 1'b0;
 
 endtask
-//TODO: How to make it winc high for seval cycles, then come to zero?
-//task asyncf_driver::drive_nothing();
-//   @(posedge up_if.wclk);
-//   up_if.winc<= 1'b0;
-//
-//endtask
+task asyncf_driver::drive_nothing();
+   @(posedge up_if.wclk);
+   if (no_tr) up_if.winc<= 1'b0; //If no transaction. Drive the winc to zero.
+
+endtask
 
 `endif

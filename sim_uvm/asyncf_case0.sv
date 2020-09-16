@@ -13,7 +13,7 @@ class case0_sequence extends uvm_sequence #(asyncf_transaction);
       repeat (10) begin
          `uvm_do(m_trans)
       end
-      #100;
+      #3000;
       if(starting_phase != null) 
          starting_phase.drop_objection(this);
    endtask
