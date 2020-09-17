@@ -13,7 +13,7 @@ This asynchronous FIFO design is based entirely on Cliff Cumming’s paper [Simu
 3. 2020.09.17: UVM verification TB done.
 
 ## About the UVM verification.
-The UVM verification codes are learned are refered to Zhangqiang's book (《UVM实战》).
+The UVM verification codes are learned and refered to Zhangqiang's book CummingsSNUG2002SJ_FIFO1.pdf(《UVM实战》).
 
 ## Doc simple introduction:
 ```text
