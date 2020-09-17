@@ -1,21 +1,21 @@
-## async_FIFO design
+# async_FIFO design
 This asynchronous FIFO design is based entirely on Cliff Cumming’s paper [Simulation and Synthesis Techniques for Asynchronous FIFO Design](http://www.sunburst-design.com/papers/CummingsSNUG2002SJ_FIFO1.pdf). 
 
-## Plan
+# Plan
 * [x] 1. Create the Async FIFO. (Done)
 * [x]  2. Try the basec verilog TB. (Done)
 * [x] 3.  Try the UVM verification. (Done)
 
 
-## Status
+# Status
 1. 2020.09.06: Basic RTL done.
 2. 2020.09.06: Basic verilog TB done.
 3. 2020.09.17: UVM verification TB done.
 
-## About the UVM verification.
-The UVM verification codes are learned and refered to Zhangqiang's book CummingsSNUG2002SJ_FIFO1.pdf(《UVM实战》).
+# About the UVM verification.
+The UVM verification codes are learned and referred to Zhangqiang's book CummingsSNUG2002SJ_FIFO1.pdf(《UVM实战》).
 
-## Doc simple introduction:
+# File introduction:
 ```text
 │  CummingsSNUG2002SJ_FIFO1.pdf      #Zhangqiang's book.
 │  README.md
@@ -78,3 +78,11 @@ The UVM verification codes are learned and refered to Zhangqiang's book Cummings
         synopsys.tcl
         timing.tcl
 ```
+
+# Contributing
+
+If you'd like to add or improve this software design, your contribution is welcome!
+
+# License
+
+This repository is released under the [MIT license](https://opensource.org/licenses/MIT). In short, this means you are free to use this software in any personal, open-source or commercial projects. Attribution is optional but appreciated.
