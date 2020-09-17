@@ -42,7 +42,7 @@ task asyncf_down_driver::main_phase(uvm_phase phase);
 endtask
 
 task asyncf_down_driver::drive_one_pkt(asyncf_down_transaction tr);
-   repeat(1) @(posedge down_if.rclk);
+//   repeat(1) @(posedge down_if.rclk);
       @(posedge down_if.rclk);
       while(1) begin
         if (down_if.rempty) begin

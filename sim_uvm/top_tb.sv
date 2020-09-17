@@ -20,7 +20,10 @@ import uvm_pkg::*;
 `include "asyncf_scoreboard.sv"
 `include "asyncf_env.sv"
 `include "base_test.sv"
+`include "asyncf_case0_seq.sv"
 `include "asyncf_case0.sv"
+`include "asyncf_case1_seq.sv"
+`include "asyncf_case1.sv"
 
 module top_tb;
 

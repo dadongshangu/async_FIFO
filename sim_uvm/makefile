@@ -1,5 +1,8 @@
-sim: simv
-	./simv +UVM_TESTNAME=asyncf_case0 -l run.log 
+case0: simv
+	./simv +UVM_TESTNAME=asyncf_case0 -l case0_run.log 
+
+case1: simv
+	./simv +UVM_TESTNAME=asyncf_case1 -l case1_run.log 
 simv: 
 	vcs +v2k -debug_all -full64 \
 	-P ${NOVAS_HOME}/share/PLI/VCS/LINUX64/verdi.tab \
@@ -16,7 +19,7 @@ simv:
 verdi:
 	verdi -f ../flist/filelist_uvm.f -ssf top_tb.fsdb -nologo &
 
-.PHONY: sim clean verdi 
+.PHONY: case0 clean verdi 
 
 clean:
 	-@rm -rf novas.* verdiLog *.log simv simv.daidir *.fsdb *.key csrc *.h

@@ -2,11 +2,11 @@ Magic 271485
 Revision Verdi3_L-2016.06-1
 
 ; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
-viewPort 0 28 1918 331 100 65
+viewPort 0 28 1918 329 100 65
 
 ; File list:
 ; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
-openDirFile -d / "" "/home/xiaotu/project/async_FIFO/sim_uvm/top_tb.fsdb"
+openDirFile -d / -i 0 "" "/home/xiaotu/project/async_FIFO/sim_uvm/top_tb.fsdb"
 
 ; file time scale:
 ; fileTimeScale ### s|ms|us|ns|ps
@@ -16,12 +16,10 @@ signalSpacing 5
 
 ; windowTimeUnit is used for zoom, cursor & marker
 ; waveform viewport range
-zoom 0.000000 5252000.000000
-cursor 2900000.000000
+zoom 0.000000 8332500.000000
+cursor 2550000.000000
 marker 0.000000
 
-; user define markers
-; userMarker time_pos marker_name color linestyle
 ; visible top row signal index
 top 0
 ; marker line index
