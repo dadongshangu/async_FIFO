@@ -2,7 +2,7 @@
 `define ASYNCF_UP_AGENT__SV
 
 class asyncf_up_agent extends uvm_agent ;
-   asyncf_sequencer  sqr;
+   asyncf_up_sequencer  sqr;
    asyncf_driver     drv;
    asyncf_up_monitor mon;
    
@@ -21,7 +21,7 @@ endclass
 
 function void asyncf_up_agent::build_phase(uvm_phase phase);
    super.build_phase(phase);
-   sqr = asyncf_sequencer::type_id::create("sqr", this);
+   sqr = asyncf_up_sequencer::type_id::create("sqr", this);
    drv = asyncf_driver::type_id::create("drv", this);
    mon = asyncf_up_monitor::type_id::create("mon", this);
 endfunction 

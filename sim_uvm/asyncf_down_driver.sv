@@ -1,8 +1,9 @@
 `ifndef ASYNCF_DOWN_DRIVER__SV
 `define ASYNCF_DOWN_DRIVER__SV
-class asyncf_down_driver extends uvm_driver#(asyncf_transaction);
+class asyncf_down_driver extends uvm_driver#(asyncf_down_transaction);
 
    virtual down_if down_if;
+   logic no_tr = 1'b0;
 
    `uvm_component_utils(asyncf_down_driver)
    function new(string name = "asyncf_down_driver", uvm_component parent = null);
@@ -16,41 +17,51 @@ class asyncf_down_driver extends uvm_driver#(asyncf_transaction);
    endfunction
 
    extern task main_phase(uvm_phase phase);
-   extern task drive_one_pkt(asyncf_transaction tr);
+   extern task drive_one_pkt(asyncf_down_transaction tr);
+   extern task drive_nothing();
 endclass
 
 task asyncf_down_driver::main_phase(uvm_phase phase);
    down_if.rinc  <= 1'b0;
    while(!down_if.rrst_n)
       @(posedge down_if.rclk);
-   while(1) begin
-      seq_item_port.get_next_item(req);
-      drive_one_pkt(req);
-      seq_item_port.item_done();
-   end
+   fork
+
+       while(1) begin
+          seq_item_port.get_next_item(req);
+          no_tr = 1'b0;
+          drive_one_pkt(req);
+          no_tr = 1'b1;
+          seq_item_port.item_done();
+       end
+       while (1) begin
+           drive_nothing();
+       end
+   join
+
 endtask
 
-task asyncf_driver::drive_one_pkt(asyncf_transaction tr);
-   byte unsigned     data_q[];
-   int  data_size;
-   
-   data_size = tr.pack_bytes(data_q) / 8; 
-   //`uvm_info("asyncf_driver", "begin to drive one pkt", UVM_LOW);
-   repeat(1) @(posedge up_if.wclk);
-   for ( int i = 0; i < data_size; i++ ) begin
-      @(posedge up_if.wclk);
-      if (~down_if.rempty) begin
-        down_if.rinc<= 1'b1;
+task asyncf_down_driver::drive_one_pkt(asyncf_down_transaction tr);
+   repeat(1) @(posedge down_if.rclk);
+      @(posedge down_if.rclk);
+      while(1) begin
+        if (down_if.rempty) begin
+            //wait if empty.
+            down_if.rinc <= 1'b0;
+            @(posedge down_if.rclk);
+        end
+        else begin
+          down_if.rinc<= 1'b1;
+          break;
+        end
       end
-      else begin
-        down_if.rinc<= 1'b0;
-      end
-   end
 
-   @(posedge up_if.wclk);
-   up_if.winc<= 1'b0;
-   //`uvm_info("asyncf_driver", "end drive one pkt", UVM_LOW);
 endtask
-//TODO. Question: How to drive the rinc side?
+
+task asyncf_down_driver::drive_nothing();
+   @(posedge down_if.rclk);
+   if (no_tr) down_if.rinc<= 1'b0; //If no transaction. Drive the rinc to zero.
+
+endtask
 
 `endif
