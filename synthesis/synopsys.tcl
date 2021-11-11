@@ -42,10 +42,29 @@ write -format ddc -h -out ./${report}/${DESIGN}_elaborate.ddc
 
 current_design ${DESIGN} 
 
-source timing.tcl
+source -e -v timing.tcl
 
 set_wire_load_mode  top
 #set_wire_load_model -name MEDIUM
+
+#Group
+
+set clock_ports [get_ports -quiet [all_fanout -clock_tree -flat]]
+set all_inputs [all_inputs]
+set all_outputs [all_outputs]
+set all_nonclk_inputs [remove_from_collection $all_inputs $clock_ports]
+set all_nonclk_outputs [remove_from_collection $all_outputs $clock_ports]
+set all_icgs [get_cells -hier -filter "is_integrated_clock_gating_cell == true"]
+set all_reg [all_registers]
+set all_reg [remove_from_collection $all_reg $all_icgs]
+set all_mem [get_cells -hierarchical -filter "is_memory_cell == true"]
+
+group_path -from $all_reg -to $all_reg -name reg2reg
+group_path -from $all_reg -to $all_nonclk_outputs -name reg2out
+group_path -from $all_nonclk_inputs -to $all_reg -name in2reg 
+group_path -from $all_nonclk_inputs -to $all_nonclk_outputs -name in2out 
+#group_path -from $all_mem -to $all_reg -name mem2reg
+#group_path -from $all_reg -to $all_mem -name reg2mem 
 
 #-----------------------------------------------------------------------------
 
@@ -53,8 +72,8 @@ set_wire_load_mode  top
 #-----------------------------------------------------------------------------
 # Compile the design
 
-ungroup -all -flatten
-#compile_ultra
-compile
+#ungroup -all -flatten
+compile_ultra -gate_clock -no_seq_output_inversion -no_autoungroup -timing_high_effort_script
+#compile
 #-----------------------------------------------------------------------------
 

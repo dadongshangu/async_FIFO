@@ -5,12 +5,19 @@
 #-----------------------------------------------------------------------------
 # Clock definitions
 
+set pre_clock_margin 0.8
+set_max_fanout 32 [current_design]
+set_max_transition 0.3 [current_design]
+
 # The rclk period is user-defined.
 set PERIOD 1000.0
 
-create_clock -name rclk -period $PERIOD [get_ports rclk]
-create_clock -name wclk -period $PERIOD [get_ports wclk]
 
+create_clock -name rclk -period [expr $PERIOD*$pre_clock_margin] [get_ports rclk]
+create_clock -name wclk -period [expr $PERIOD*$pre_clock_margin] [get_ports wclk]
+
+set_clock_groups -asynchronous -group [get_clocks rclk] 
+set_clock_groups -asynchronous -group [get_clocks wclk]
 
 # Set the clock transition time to a value compatible with its period.
 set CTRANSITION 40.0
@@ -24,6 +31,29 @@ set_input_transition  $CTRANSITION  [get_ports wclk]
 set UNCERTAINTY 50.0
 set_clock_uncertainty -setup $UNCERTAINTY [get_clocks rclk]
 set_clock_uncertainty -setup $UNCERTAINTY [get_clocks wclk]
+
+set CLOCKS_LIST [ list \
+    wclk \
+    rclk \
+    ]
+
+set_dont_touch_network  [all_clocks]
+set_ideal_network       [all_clocks]
+
+set RESETS_LIST [ list \
+    wrst_n \
+    rrst_n \
+    ]
+
+if { [llength RESETS_LIST ] > 0 } {
+    foreach RstName $RESETS_LIST {
+        echo "INFO: Defining Reset : $RstName"
+        set_drive 0 [get_ports $RstName -filter {@port_direction ==in} -quiet]
+        set_false_path -from [get_ports $RstName -quiet]
+        set_ideal_network -no_propagate [get_nets -of_object [get_ports $RstName -filter {@port_direction == in} -quiet] -quiet]
+    }
+}
+
 
 #-----------------------------------------------------------------------------
 
@@ -100,3 +130,7 @@ set_output_delay $PO10 -clock rclk [get_ports rempty]
 set_output_delay $PO10 -clock rclk [get_ports rdata]
 set_output_delay $PO10 -clock wclk [get_ports wfull]
 
+set AllInputNoClkRst [remove_from_collection [all_inputs] [list $RESETS_LIST $CLOCKS_LIST] ]
+set AllOutput   [all_outputs]
+
+set_max_delay [ expr $PERIOD*$pre_clock_margin ] -from $AllInputNoClkRst -to $AllOutput
