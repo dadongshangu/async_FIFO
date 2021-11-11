@@ -71,7 +71,7 @@ The UVM verification codes are learned and referred to Zhangqiang's book Cumming
 │      rptr_empty.v
 │      wptr_full.v
 │      
-└─synthesis                           #Synthesis script. NOT AVILABLE YET.
+└─synthesis                           #Synthesis script. You need to replace the link/target_library. 
         main.tcl
         makefile
         README
