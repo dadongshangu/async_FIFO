@@ -16,6 +16,7 @@ input                   winc;
 input                   wclk;
 input                   wrst_n;
 
+wire                    wfull_val;
 reg                     wfull;
 reg [ADDRSIZE:0]        wbin;
 reg [ADDRSIZE :0]       wptr;

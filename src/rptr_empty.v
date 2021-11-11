@@ -17,6 +17,7 @@ input                   rclk;
 input                   rrst_n;
 
 reg [ADDRSIZE:0]        rbin;
+wire                    rempty_val;
 reg                     rempty;
 reg [ADDRSIZE :0]       rptr;
 wire [ADDRSIZE:0]       rgraynext;
