@@ -32,14 +32,14 @@ wire [ASIZE:0]      rptr;
 wire [ASIZE:0]      wq2_rptr;
 wire [ASIZE:0]      rq2_wptr;
 
-gray_sync2d sync_r2w (
+gray_sync2d #(ASIZE) sync_r2w (
     .o_ptr(wq2_rptr), 
     .i_ptr(rptr),
     .des_clk(wclk), 
     .des_rst_n(wrst_n)
 );
 
-gray_sync2d sync_w2r (
+gray_sync2d #(ASIZE) sync_w2r (
     .o_ptr(rq2_wptr), 
     .i_ptr(wptr),
     .des_clk(rclk), 
